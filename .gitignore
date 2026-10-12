@@ -1,0 +1,5 @@
+# Evidencia de pruebas: se sube, no se commitea
+.artifacts/
+
+# Worktrees de agentes
+.worktrees/
