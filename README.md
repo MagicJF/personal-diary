@@ -14,13 +14,16 @@ vuelves.
 
 ## Cómo usarlo
 
-Abre `index.html` en el navegador, o sírvelo en local:
+Sirve la carpeta en local y abre esa dirección:
 
 ```bash
 python3 -m http.server 8781   # luego abre http://127.0.0.1:8781/
 ```
 
-No hay que instalar nada para usarlo: son ficheros estáticos.
+Abrir `index.html` directamente (doble clic, `file://`) no funciona: la página
+usa módulos JavaScript y los navegadores los bloquean en `file://`. Hace falta
+servirla por HTTP, que es lo que hace el comando de arriba. No hay que instalar
+nada más: son ficheros estáticos.
 
 ## Estructura
 
@@ -44,7 +47,7 @@ DOM.
 npm test
 ```
 
-Doce pruebas sobre el servicio, el almacenamiento y las reglas de validación,
+Dieciséis pruebas sobre el servicio, el almacenamiento y las reglas de validación,
 con un backend en memoria en vez de `localStorage`.
 
 ## Límites

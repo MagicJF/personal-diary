@@ -188,6 +188,7 @@ button.primary {
 .entry-text {
   margin: 0 0 10px;
   white-space: pre-wrap;
+  overflow-wrap: anywhere;
 }
 
 .entry-actions {

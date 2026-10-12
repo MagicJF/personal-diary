@@ -2,7 +2,7 @@
 // acceptable", "what does the user read when something fails") and wires the
 // DOM to the diary service. The reusable mechanics live in src/diary-service.js.
 
-import { createStorage } from "./storage.js";
+import { createStorage, STORAGE_KEY } from "./storage.js";
 import { createDiaryService } from "./diary-service.js";
 
 const MAX_LENGTH = 2000;
@@ -175,6 +175,15 @@ export function startDiary(root, { storage } = {}) {
   });
 
   searchInput.addEventListener("input", render);
+
+  // Another tab writing to the same key would otherwise leave this tab showing a
+  // stale list; every mutation re-reads before writing, so the merge is safe.
+  if (typeof window !== "undefined" && typeof window.addEventListener === "function") {
+    window.addEventListener("storage", (event) => {
+      if (event.key && event.key !== STORAGE_KEY) return;
+      render();
+    });
+  }
 
   render();
   return diary;

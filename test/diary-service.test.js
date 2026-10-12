@@ -39,8 +39,71 @@ test("storage reports a structured error on corrupt data", () => {
 
 test("storage round-trips written entries", () => {
   const storage = createStorage({ backend: memoryBackend() });
-  assert.deepEqual(storage.write([{ id: "a" }]), { ok: true });
-  assert.deepEqual(storage.read(), { ok: true, entries: [{ id: "a" }] });
+  const entry = { id: "a", text: "hola", date: "2026-10-12", mood: "neutral" };
+  assert.deepEqual(storage.write([entry]), { ok: true });
+  assert.deepEqual(storage.read(), { ok: true, entries: [entry] });
+});
+
+test("storage rejects stored entries that are not shaped like entries", () => {
+  const damaged = [
+    { [STORAGE_KEY]: "[null]" },
+    { [STORAGE_KEY]: '[{"id":"a","text":5,"date":"2026-10-12"}]' },
+    { [STORAGE_KEY]: '[{"text":"sin id","date":"2026-10-12"}]' },
+    { [STORAGE_KEY]: '{"id":"a"}' },
+  ];
+
+  for (const seed of damaged) {
+    const result = createStorage({ backend: memoryBackend(seed) }).read();
+    assert.equal(result.ok, false, `expected a load error for ${JSON.stringify(seed)}`);
+    assert.match(result.error, /damaged|not a list/);
+  }
+});
+
+test("storage reports a structured error when the browser blocks storage", () => {
+  const original = Object.getOwnPropertyDescriptor(globalThis, "localStorage");
+  Object.defineProperty(globalThis, "localStorage", {
+    configurable: true,
+    get() {
+      throw new Error("access denied");
+    },
+  });
+
+  try {
+    const storage = createStorage();
+    const result = storage.read();
+    assert.equal(result.ok, false);
+    assert.match(result.error, /storage is not available: access denied/);
+    assert.equal(storage.write([]).ok, false);
+  } finally {
+    if (original) Object.defineProperty(globalThis, "localStorage", original);
+    else delete globalThis.localStorage;
+  }
+});
+
+test("storage reports a structured error when a write fails", () => {
+  const backend = {
+    getItem: () => null,
+    setItem: () => {
+      throw new Error("quota exceeded");
+    },
+  };
+  const result = createStorage({ backend }).write([{ id: "a" }]);
+  assert.equal(result.ok, false);
+  assert.match(result.error, /could not save entries: quota exceeded/);
+});
+
+test("two tabs sharing storage do not lose each other's entries", () => {
+  const backend = memoryBackend();
+  const tabA = createDiaryService({ storage: createStorage({ backend }) });
+  const tabB = createDiaryService({ storage: createStorage({ backend }) });
+
+  tabA.create({ text: "escrito en la pestaña A" });
+  tabB.create({ text: "escrito en la pestaña B" });
+
+  const texts = tabA.list().entries.map((entry) => entry.text);
+  assert.equal(texts.length, 2);
+  assert.ok(texts.includes("escrito en la pestaña A"));
+  assert.ok(texts.includes("escrito en la pestaña B"));
 });
 
 test("create persists an entry with id, date and mood", () => {
