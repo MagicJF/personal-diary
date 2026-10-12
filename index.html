@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Mi Diario</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app" data-diary>
+      <header class="app-head">
+        <h1>Mi Diario</h1>
+        <p class="subtitle">Lo que escribas se queda en este navegador.</p>
+      </header>
+
+      <form class="composer" data-form>
+        <label class="field">
+          <span>¿Qué pasó hoy?</span>
+          <textarea
+            data-input
+            rows="4"
+            maxlength="2000"
+            placeholder="Escribe tu entrada de hoy..."
+          ></textarea>
+        </label>
+
+        <div class="row">
+          <label class="field small">
+            <span>Fecha</span>
+            <input type="date" data-date />
+          </label>
+          <label class="field small">
+            <span>Ánimo</span>
+            <select data-mood>
+              <option value="good">Bien</option>
+              <option value="neutral" selected>Normal</option>
+              <option value="bad">Bajo</option>
+            </select>
+          </label>
+          <button class="primary" type="submit">Guardar entrada</button>
+        </div>
+
+        <p class="status" data-status data-kind="info" role="status"></p>
+      </form>
+
+      <section class="entries">
+        <div class="entries-head">
+          <h2>Entradas</h2>
+          <span class="count" data-count></span>
+        </div>
+        <input
+          class="search"
+          type="search"
+          data-search
+          placeholder="Buscar en el diario..."
+        />
+        <div data-list></div>
+      </section>
+    </main>
+
+    <script type="module" src="./src/app.js"></script>
+  </body>
+</html>
