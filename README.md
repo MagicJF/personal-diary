@@ -14,26 +14,32 @@ vuelves.
 
 ## Cómo usarlo
 
-Sirve la carpeta en local y abre esa dirección:
+Abre `diario.html` con doble clic. Ya está: es un solo fichero con el HTML, el
+CSS y el JavaScript dentro, así que funciona desde el disco sin servidor ni
+instalación.
+
+Si prefieres trabajar con el código separado, sirve la carpeta por HTTP:
 
 ```bash
 python3 -m http.server 8781   # luego abre http://127.0.0.1:8781/
 ```
 
-Abrir `index.html` directamente (doble clic, `file://`) no funciona: la página
-usa módulos JavaScript y los navegadores los bloquean en `file://`. Hace falta
-servirla por HTTP, que es lo que hace el comando de arriba. No hay que instalar
-nada más: son ficheros estáticos.
+Esa segunda vía es obligatoria para `index.html`: usa módulos JavaScript y los
+navegadores los bloquean en `file://`, así que al abrirlo con doble clic el
+formulario se enviaría de forma normal, la página se recargaría y el texto
+desaparecería sin guardarse.
 
 ## Estructura
 
 ```
-index.html            marcado de la página
+diario.html           la app entera en un fichero (generado, es lo que abres)
+index.html            marcado de la página, sin CSS ni JS incrustados
 styles.css            estilos
 src/storage.js        adaptador de almacenamiento (lee y escribe la lista)
 src/diary-service.js  servicio: ids, fechas, orden y persistencia de entradas
 src/app.js            acciones: reglas del producto, mensajes y enlace con el DOM
-test/                 pruebas del servicio y de las reglas
+scripts/              genera diario.html a partir de lo anterior
+test/                 pruebas del servicio, de las reglas y del empaquetado
 ```
 
 Las reglas de negocio (qué es una entrada válida, qué lee el usuario cuando
@@ -47,8 +53,18 @@ DOM.
 npm test
 ```
 
-Dieciséis pruebas sobre el servicio, el almacenamiento y las reglas de validación,
-con un backend en memoria en vez de `localStorage`.
+Veinte pruebas sobre el servicio, el almacenamiento (datos dañados,
+almacenamiento bloqueado, fallo de escritura, dos pestañas), la validación y el
+empaquetado, con un backend en memoria en vez de `localStorage`.
+
+## Empaquetado
+
+```bash
+npm run build   # regenera diario.html desde index.html, styles.css y src/
+```
+
+`diario.html` está versionado, y una prueba falla si dejas de regenerarlo
+después de tocar el código: si cambias `src/`, ejecuta `npm run build`.
 
 ## Límites
 

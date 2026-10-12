@@ -1,0 +1,671 @@
+<!doctype html>
+<!-- Fichero generado por scripts/build-standalone.mjs. No lo edites a mano: cambia index.html, styles.css o src/. -->
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Mi Diario</title>
+    <style>
+:root {
+  --bg: #f6f5f2;
+  --card: #ffffff;
+  --ink: #23211d;
+  --muted: #7a756c;
+  --line: #e3ded6;
+  --accent: #4a6b5d;
+  --danger: #a2543f;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 32px 16px 64px;
+  background: var(--bg);
+  color: var(--ink);
+  font: 16px/1.55 -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+}
+
+.app {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.app-head h1 {
+  margin: 0 0 4px;
+  font-size: 30px;
+  letter-spacing: -0.02em;
+}
+
+.subtitle {
+  margin: 0 0 24px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.composer,
+.entries {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.entries {
+  margin-top: 20px;
+}
+
+.field {
+  display: block;
+  margin-bottom: 14px;
+}
+
+.field > span {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+textarea,
+input[type="date"],
+input[type="search"],
+select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fffdfa;
+  font: inherit;
+  color: inherit;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 96px;
+}
+
+textarea:focus,
+input:focus,
+select:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.row {
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.field.small {
+  margin-bottom: 0;
+  flex: 0 0 150px;
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: #fff;
+  padding: 10px 14px;
+  color: inherit;
+}
+
+button:hover {
+  border-color: var(--accent);
+}
+
+button.primary {
+  margin-left: auto;
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  font-weight: 600;
+}
+
+.status {
+  min-height: 20px;
+  margin: 14px 0 0;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.status[data-kind="ok"] {
+  color: var(--accent);
+}
+
+.status[data-kind="error"] {
+  color: var(--danger);
+}
+
+.entries-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.entries-head h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.count {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.search {
+  margin: 12px 0 16px;
+}
+
+.entry {
+  border-top: 1px solid var(--line);
+  padding: 14px 0;
+}
+
+.entry:first-child {
+  border-top: 0;
+}
+
+.entry-head {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.entry-date {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.entry-mood {
+  font-size: 12px;
+  color: var(--muted);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 1px 9px;
+}
+
+.entry-text {
+  margin: 0 0 10px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.entry-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.entry-actions button {
+  padding: 5px 10px;
+  font-size: 13px;
+}
+
+.entry-actions [data-action="delete"]:hover {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+.empty {
+  margin: 0;
+  padding: 18px 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+</style>
+  </head>
+  <body>
+    <main class="app" data-diary>
+      <header class="app-head">
+        <h1>Mi Diario</h1>
+        <p class="subtitle">Lo que escribas se queda en este navegador.</p>
+      </header>
+
+      <form class="composer" data-form>
+        <label class="field">
+          <span>¿Qué pasó hoy?</span>
+          <textarea
+            data-input
+            rows="4"
+            maxlength="2000"
+            placeholder="Escribe tu entrada de hoy..."
+          ></textarea>
+        </label>
+
+        <div class="row">
+          <label class="field small">
+            <span>Fecha</span>
+            <input type="date" data-date />
+          </label>
+          <label class="field small">
+            <span>Ánimo</span>
+            <select data-mood>
+              <option value="good">Bien</option>
+              <option value="neutral" selected>Normal</option>
+              <option value="bad">Bajo</option>
+            </select>
+          </label>
+          <button class="primary" type="submit">Guardar entrada</button>
+        </div>
+
+        <p class="status" data-status data-kind="info" role="status"></p>
+      </form>
+
+      <section class="entries">
+        <div class="entries-head">
+          <h2>Entradas</h2>
+          <span class="count" data-count></span>
+        </div>
+        <input
+          class="search"
+          type="search"
+          data-search
+          placeholder="Buscar en el diario..."
+        />
+        <div data-list></div>
+      </section>
+    </main>
+
+    <script>
+// ---- src/storage.js ----
+// Storage adapter: reusable mechanics for persisting a list of entries.
+// Knows nothing about what an entry means — it only reads and writes JSON.
+
+const STORAGE_KEY = "diary.entries.v1";
+
+/** Shape check so damaged stored data can never reach the service or the DOM. */
+function isEntry(value) {
+  return (
+    value !== null &&
+    typeof value === "object" &&
+    typeof value.id === "string" &&
+    value.id !== "" &&
+    typeof value.text === "string" &&
+    typeof value.date === "string"
+  );
+}
+
+/**
+ * @param {{ backend?: Storage, key?: string }} options
+ * @returns {{ read: () => {ok: true, entries: unknown[]} | {ok: false, error: string},
+ *            write: (entries: unknown[]) => {ok: true} | {ok: false, error: string} }}
+ */
+function createStorage({ backend, key = STORAGE_KEY } = {}) {
+  // Reaching for `globalThis.localStorage` can throw on its own (a browser with
+  // storage blocked raises a SecurityError on access), so the backend is
+  // resolved lazily inside each call and never during construction.
+  function resolveBackend() {
+    if (backend) return { ok: true, backend };
+    try {
+      const store = globalThis.localStorage;
+      if (!store) return { ok: false, error: "this browser has no storage available" };
+      return { ok: true, backend: store };
+    } catch (error) {
+      return { ok: false, error: `storage is not available: ${error.message}` };
+    }
+  }
+
+  return {
+    read() {
+      const resolved = resolveBackend();
+      if (!resolved.ok) return resolved;
+
+      try {
+        const raw = resolved.backend.getItem(key);
+        if (raw === null || raw === "") return { ok: true, entries: [] };
+
+        const parsed = JSON.parse(raw);
+        if (!Array.isArray(parsed)) {
+          return { ok: false, error: "stored data is not a list" };
+        }
+        if (!parsed.every(isEntry)) {
+          return { ok: false, error: "stored entries are damaged" };
+        }
+        return { ok: true, entries: parsed };
+      } catch (error) {
+        return { ok: false, error: `could not read entries: ${error.message}` };
+      }
+    },
+
+    write(entries) {
+      const resolved = resolveBackend();
+      if (!resolved.ok) return resolved;
+
+      try {
+        resolved.backend.setItem(key, JSON.stringify(entries));
+        return { ok: true };
+      } catch (error) {
+        return { ok: false, error: `could not save entries: ${error.message}` };
+      }
+    },
+  };
+}
+
+// ---- src/diary-service.js ----
+// Service layer: reusable mechanics for storing and shaping diary entries.
+// It owns ids, timestamps, ordering and persistence. It does not own the
+// rules about what the product considers a valid entry, nor the wording the
+// user sees — those live in the actions layer (src/app.js).
+
+function defaultId() {
+  if (globalThis.crypto?.randomUUID) return globalThis.crypto.randomUUID();
+  return `e_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 10)}`;
+}
+
+/**
+ * @param {{ storage: ReturnType<typeof import('./storage.js').createStorage>,
+ *           idFactory?: () => string,
+ *           now?: () => string }} deps
+ */
+function createDiaryService({ storage, idFactory = defaultId, now } = {}) {
+  if (!storage) throw new Error("createDiaryService requires a storage adapter");
+  const timestamp = now ?? (() => new Date().toISOString());
+
+  function load() {
+    return storage.read();
+  }
+
+  function listAll() {
+    const result = load();
+    if (!result.ok) return result;
+    const entries = [...result.entries].sort((a, b) =>
+      String(b.createdAt).localeCompare(String(a.createdAt)),
+    );
+    return { ok: true, entries };
+  }
+
+  return {
+    /** @returns {{ok: true, entries: object[]} | {ok: false, error: string}} */
+    list() {
+      return listAll();
+    },
+
+    /** @returns {{ok: true, entry: object} | {ok: false, error: string}} */
+    get(id) {
+      const result = load();
+      if (!result.ok) return result;
+      const entry = result.entries.find((item) => item.id === id);
+      if (!entry) return { ok: false, error: "entry not found" };
+      return { ok: true, entry };
+    },
+
+    /** Creates and persists a new entry. Caller decides whether the text is acceptable. */
+    create({ text, date, mood = "neutral" } = {}) {
+      const result = load();
+      if (!result.ok) return result;
+
+      const createdAt = timestamp();
+      const entry = {
+        id: idFactory(),
+        text: String(text ?? "").trim(),
+        date: date || createdAt.slice(0, 10),
+        mood,
+        createdAt,
+      };
+
+      const next = [...result.entries, entry];
+      const written = storage.write(next);
+      if (!written.ok) return written;
+      return { ok: true, entry };
+    },
+
+    /** Applies a partial update; only the fields present in `changes` are touched. */
+    update(id, changes = {}) {
+      const result = load();
+      if (!result.ok) return result;
+
+      const index = result.entries.findIndex((item) => item.id === id);
+      if (index === -1) return { ok: false, error: "entry not found" };
+
+      const current = result.entries[index];
+      const updated = {
+        ...current,
+        ...("text" in changes ? { text: String(changes.text ?? "").trim() } : {}),
+        ...("date" in changes ? { date: changes.date } : {}),
+        ...("mood" in changes ? { mood: changes.mood } : {}),
+        updatedAt: timestamp(),
+      };
+
+      const next = [...result.entries];
+      next[index] = updated;
+      const written = storage.write(next);
+      if (!written.ok) return written;
+      return { ok: true, entry: updated };
+    },
+
+    /** @returns {{ok: true, removed: object} | {ok: false, error: string}} */
+    remove(id) {
+      const result = load();
+      if (!result.ok) return result;
+
+      const removed = result.entries.find((item) => item.id === id);
+      if (!removed) return { ok: false, error: "entry not found" };
+
+      const next = result.entries.filter((item) => item.id !== id);
+      const written = storage.write(next);
+      if (!written.ok) return written;
+      return { ok: true, removed };
+    },
+
+    /** Case-insensitive substring match over the entry text. */
+    search(query) {
+      const result = listAll();
+      if (!result.ok) return result;
+
+      const needle = String(query ?? "").trim().toLowerCase();
+      if (!needle) return result;
+
+      const entries = result.entries.filter((entry) =>
+        entry.text.toLowerCase().includes(needle),
+      );
+      return { ok: true, entries };
+    },
+  };
+}
+
+// ---- src/app.js ----
+// Actions / boundary layer: it owns the domain rules ("when is an entry
+// acceptable", "what does the user read when something fails") and wires the
+// DOM to the diary service. The reusable mechanics live in src/diary-service.js.
+
+
+
+const MAX_LENGTH = 2000;
+
+const MESSAGES = {
+  empty: "Escribe algo antes de guardar.",
+  tooLong: `La entrada no puede pasar de ${MAX_LENGTH} caracteres.`,
+  saveFailed: "No se pudo guardar la entrada.",
+  loadFailed: "No se pudieron leer tus entradas guardadas.",
+};
+
+/** Domain rule: what the product accepts as a writable entry. */
+function validateEntry({ text }) {
+  const trimmed = String(text ?? "").trim();
+  if (!trimmed) return { ok: false, error: MESSAGES.empty };
+  if (trimmed.length > MAX_LENGTH) return { ok: false, error: MESSAGES.tooLong };
+  return { ok: true, text: trimmed };
+}
+
+function todayISO(date = new Date()) {
+  const local = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+  return local.toISOString().slice(0, 10);
+}
+
+function formatDate(isoDate) {
+  const [year, month, day] = String(isoDate).split("-");
+  if (!year || !month || !day) return String(isoDate);
+  return `${day}/${month}/${year}`;
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;");
+}
+
+function startDiary(root, { storage } = {}) {
+  const diary = createDiaryService({ storage: storage ?? createStorage() });
+
+  const form = root.querySelector("[data-form]");
+  const textInput = root.querySelector("[data-input]");
+  const dateInput = root.querySelector("[data-date]");
+  const moodInput = root.querySelector("[data-mood]");
+  const searchInput = root.querySelector("[data-search]");
+  const list = root.querySelector("[data-list]");
+  const status = root.querySelector("[data-status]");
+  const count = root.querySelector("[data-count]");
+
+  dateInput.value = todayISO();
+
+  function setStatus(message, kind = "info") {
+    status.textContent = message;
+    status.dataset.kind = kind;
+  }
+
+  function render() {
+    const query = searchInput.value;
+    const result = query.trim() ? diary.search(query) : diary.list();
+
+    if (!result.ok) {
+      setStatus(MESSAGES.loadFailed, "error");
+      list.innerHTML = "";
+      count.textContent = "";
+      return;
+    }
+
+    const entries = result.entries;
+    count.textContent =
+      entries.length === 1 ? "1 entrada" : `${entries.length} entradas`;
+
+    if (entries.length === 0) {
+      list.innerHTML = `<p class="empty">${
+        query.trim() ? "Nada coincide con esa búsqueda." : "Todavía no escribiste nada."
+      }</p>`;
+      return;
+    }
+
+    list.innerHTML = entries
+      .map(
+        (entry) => `
+      <article class="entry" data-id="${escapeHtml(entry.id)}">
+        <header class="entry-head">
+          <span class="entry-date">${escapeHtml(formatDate(entry.date))}</span>
+          <span class="entry-mood">${escapeHtml(moodLabel(entry.mood))}</span>
+        </header>
+        <p class="entry-text">${escapeHtml(entry.text)}</p>
+        <div class="entry-actions">
+          <button type="button" data-action="edit">Editar</button>
+          <button type="button" data-action="delete">Borrar</button>
+        </div>
+      </article>`,
+      )
+      .join("");
+  }
+
+  function moodLabel(mood) {
+    return { good: "Bien", neutral: "Normal", bad: "Bajo" }[mood] ?? "Normal";
+  }
+
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    const check = validateEntry({ text: textInput.value });
+    if (!check.ok) {
+      setStatus(check.error, "error");
+      textInput.focus();
+      return;
+    }
+
+    const created = diary.create({
+      text: check.text,
+      date: dateInput.value || todayISO(),
+      mood: moodInput.value,
+    });
+
+    if (!created.ok) {
+      setStatus(MESSAGES.saveFailed, "error");
+      return;
+    }
+
+    textInput.value = "";
+    dateInput.value = todayISO();
+    moodInput.value = "neutral";
+    setStatus("Entrada guardada.", "ok");
+    render();
+  });
+
+  list.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-action]");
+    if (!button) return;
+
+    const article = button.closest(".entry");
+    const id = article?.dataset.id;
+    if (!id) return;
+
+    if (button.dataset.action === "delete") {
+      const result = diary.remove(id);
+      if (!result.ok) {
+        setStatus(MESSAGES.saveFailed, "error");
+        return;
+      }
+      setStatus("Entrada borrada.", "ok");
+      render();
+      return;
+    }
+
+    if (button.dataset.action === "edit") {
+      const current = diary.get(id);
+      if (!current.ok) return;
+
+      const draft = prompt("Editar entrada:", current.entry.text);
+      if (draft === null) return;
+
+      const check = validateEntry({ text: draft });
+      if (!check.ok) {
+        setStatus(check.error, "error");
+        return;
+      }
+
+      const result = diary.update(id, { text: check.text });
+      if (!result.ok) {
+        setStatus(MESSAGES.saveFailed, "error");
+        return;
+      }
+      setStatus("Entrada actualizada.", "ok");
+      render();
+    }
+  });
+
+  searchInput.addEventListener("input", render);
+
+  // Another tab writing to the same key would otherwise leave this tab showing a
+  // stale list; every mutation re-reads before writing, so the merge is safe.
+  if (typeof window !== "undefined" && typeof window.addEventListener === "function") {
+    window.addEventListener("storage", (event) => {
+      if (event.key && event.key !== STORAGE_KEY) return;
+      render();
+    });
+  }
+
+  render();
+  return diary;
+}
+
+if (typeof document !== "undefined") {
+  const root = document.querySelector("[data-diary]");
+  if (root) startDiary(root);
+}
+</script>
+  </body>
+</html>
