@@ -46,10 +46,18 @@ $ npm test
 # fail 0
 ```
 
+## Vídeo
+
+`demo.webm` es la grabación del screencast de Chromium (`bash record-demo.sh`),
+con el flujo completo sobre `diario.html` abierto desde el disco. Convertido a
+`demo.mp4` (h264, 1120x900, 21 s) para poder verlo en un reproductor y a
+`demo.gif` (880 px, 10 fps) para incrustarlo en el PR.
+
 ## Caveats
 
-- La grabación de vídeo (`agent-browser record`) no está disponible en este
-  contenedor, así que la evidencia es la secuencia de capturas numeradas.
+- La grabación se hizo con el screencast de Chromium, que solo emite un fotograma
+  cuando la página cambia: el vídeo dura 21 s para un guion de unos 24 s de
+  esperas, así que las pausas se ven algo más cortas de lo que fueron.
 - El paso 08 simula el `prompt()` nativo con `window.prompt` reemplazado por
   JS: los diálogos nativos no son manejables de forma fiable en headless.
 - El input `type="date"` no acepta `fill()` de forma fiable con este CLI; en el
